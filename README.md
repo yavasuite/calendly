@@ -57,4 +57,4 @@ These need **backend logic + external APIs** (Google Calendar, Outlook, etc.).
 44. **Invite Co-Hosts to a Meeting**
 45. **Custom Scheduling Forms (Collect Extra Data Before Booking)**
 46. **Team Availability Pooling (Find Common Free Time)**
-47. **Dynamic Booking Limits (Limit Per Day, Per Week
+47. **Dynamic Booking Limits (Limit Per Day, Per Week**
