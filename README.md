@@ -1,5 +1,3 @@
----
-
 ## **🟢 1. Project Setup**
 1. **Create a GitHub Repo** (`calendly-clone` or `yavasuite-scheduling`)
 2. **Set up a Flask Backend** (`backend/`)
