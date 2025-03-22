@@ -8,24 +8,44 @@ auth_bp = Blueprint("auth", __name__)
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
-    if User.query.filter_by(email=data["email"]).first():
+    email = data.get('email')
+    password = data.get('password')
+    role = data.get('role', 'User')
+
+    if not email or not password:
+        return jsonify({"error": "Email and password are required"}), 400
+
+    if role not in ['User', 'Admin']:
+        return jsonify({"error": "Invalid role"}), 400
+
+    if User.query.filter_by(email=email).first():
         return jsonify({"error": "Email already exists"}), 400
 
-    user = User(email=data["email"])
-    user.set_password(data["password"])
+    user = User(email=email, role=role)
+    user.set_password(password)
     db.session.add(user)
     db.session.commit()
 
     token = generate_access_token(user.id)
-    return jsonify({"token": token}), 201
+    return jsonify({"message": f"{role} registered successfully", "token": token}), 201
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
-    user = User.query.filter_by(email=data["email"]).first()
+    email = data.get('email')
+    password = data.get('password')
 
-    if user and user.check_password(data["password"]):
-        token = generate_access_token(user.id)
-        return jsonify({"token": token}), 200
+    if not email or not password:
+        return jsonify({"error": "Email and password required"}), 400
 
-    return jsonify({"error": "Invalid credentials"}), 401
+    user = User.query.filter_by(email=email).first()
+
+    if user and user.check_password(password):
+        token = generate_access_token(user)
+        return jsonify({
+            "access_token": token,
+            "role": user.role,
+            "user_id": user.id
+        }), 200
+    else:
+        return jsonify({"error": "Invalid credentials"}), 401
