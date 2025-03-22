@@ -1,1 +1,59 @@
-backend/venv/
+# ------------------------
+# 🔥 PYTHON / FLASK
+# ------------------------
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.db
+*.sqlite3
+instance/
+.env
+env/
+venv/
+.mypy_cache/
+.pytest_cache/
+*.log
+
+# Flask Migrations (optional)
+migrations/
+
+backend/.env
+
+# ------------------------
+# 🔥 REACT / NODE
+# ------------------------
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+# ------------------------
+# 🔥 DOCKER
+# ------------------------
+*.tar
+*.img
+*.container
+db_data/
+.dockerignore
+
+# ------------------------
+# 🔥 OS / SYSTEM
+# ------------------------
+.DS_Store
+Thumbs.db
+
+# ------------------------
+# 🔥 IDEs / EDITORS
+# ------------------------
+.vscode/
+.idea/
+
+# ------------------------
+# 🔥 OTHER
+# ------------------------
+*.swp
+*.swo
+*.bak
+*.tmp
