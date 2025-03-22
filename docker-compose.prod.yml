@@ -35,5 +35,14 @@ services:
     ports:
       - "6379:6379"
 
+  frontend:
+    build: ./frontend
+    container_name: calendly-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
 volumes:
   db_data:
