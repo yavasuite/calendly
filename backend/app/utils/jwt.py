@@ -7,7 +7,7 @@ def generate_access_token(user):
     # Include role in JWT payload
     additional_claims = {"role": user.role}
     return create_access_token(
-        identity=user.id,
+        identity=str(user.id),
         additional_claims=additional_claims,
         expires_delta=timedelta(days=7)
     )
