@@ -31,6 +31,16 @@ def schedule_meeting():
 
     user_id = int(get_jwt_identity())
 
+    # Check for conflicts (any meeting that overlaps the requested time)
+    conflict = Meeting.query.filter(
+        Meeting.user_id == user_id,
+        Meeting.start_time < end_time,
+        Meeting.end_time > start_time
+    ).first()
+
+    if conflict:
+        return jsonify({"error": "Time slot already booked"}), 409
+
     meeting = Meeting(
         title=title,
         description=description,
