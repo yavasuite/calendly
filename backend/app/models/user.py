@@ -7,6 +7,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
     role = db.Column(db.String(10), nullable=False, default='User') # 'User' or 'Admin'
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    availability_slots = db.relationship("AvailabilitySlot", backref="user", cascade="all, delete-orphan")
 
     def set_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')

@@ -1,17 +1,9 @@
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import logging
-
 from logging.config import fileConfig
 
 from flask import current_app
 
 from alembic import context
-
-from app import create_app, db
-
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -22,8 +14,6 @@ config = context.config
 fileConfig(config.config_file_name)
 logger = logging.getLogger('alembic.env')
 
-flask_app = create_app()
-flask_app.app_context().push()
 
 def get_engine():
     try:
