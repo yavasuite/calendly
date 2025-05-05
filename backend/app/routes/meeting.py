@@ -59,3 +59,66 @@ def schedule_meeting():
         "start_time": meeting.start_time.isoformat(),
         "end_time": meeting.end_time.isoformat()
     }), 201
+
+@meeting_bp.route("/<int:meeting_id>/reschedule", methods=["PATCH"])
+@jwt_required()
+def reschedule_meeting(meeting_id):
+    user_id = int(get_jwt_identity())
+    data = request.get_json()
+
+    new_start = data.get("start_time")
+    new_end = data.get("end_time")
+
+    if not all([new_start, new_end]):
+        return jsonify({"error": "Missing start_time or end_time"}), 400
+
+    try:
+        start_time = datetime.fromisoformat(new_start)
+        end_time = datetime.fromisoformat(new_end)
+    except ValueError:
+        return jsonify({"error": "Datetime must be in ISO format"}), 400
+
+    if start_time >= end_time:
+        return jsonify({"error": "start_time must be before end_time"}), 400
+
+    meeting = Meeting.query.filter_by(id=meeting_id, user_id=user_id).first()
+    if not meeting:
+        return jsonify({"error": "Meeting not found"}), 404
+
+    # Check for conflicts with other meetings
+    conflict = Meeting.query.filter(
+        Meeting.user_id == user_id,
+        Meeting.id != meeting_id,
+        Meeting.start_time < end_time,
+        Meeting.end_time > start_time
+    ).first()
+
+    if conflict:
+        return jsonify({"error": "New time slot conflicts with an existing meeting"}), 409
+
+    meeting.start_time = start_time
+    meeting.end_time = end_time
+
+    db.session.commit()
+
+    return jsonify({
+        "id": meeting.id,
+        "title": meeting.title,
+        "description": meeting.description,
+        "start_time": meeting.start_time.isoformat(),
+        "end_time": meeting.end_time.isoformat()
+    }), 200
+
+@meeting_bp.route("/<int:meeting_id>", methods=["DELETE"])
+@jwt_required()
+def cancel_meeting(meeting_id):
+    user_id = int(get_jwt_identity())
+
+    meeting = Meeting.query.filter_by(id=meeting_id, user_id=user_id).first()
+    if not meeting:
+        return jsonify({"error": "Meeting not found"}), 404
+
+    db.session.delete(meeting)
+    db.session.commit()
+
+    return jsonify({"message": f"Meeting {meeting_id} cancelled successfully."}), 200
