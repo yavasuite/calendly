@@ -118,10 +118,10 @@ def cancel_meeting(meeting_id):
     if not meeting:
         return jsonify({"error": "Meeting not found"}), 404
 
-    db.session.delete(meeting)
+    meeting.status = MeetingStatus.CANCELED
     db.session.commit()
 
-    return jsonify({"message": f"Meeting {meeting_id} cancelled successfully."}), 200
+    return jsonify({"message": f"Meeting {meeting_id} canceled successfully."}), 200
 
 @meeting_bp.route("", methods=["GET"])
 @jwt_required()
