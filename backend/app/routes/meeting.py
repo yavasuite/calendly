@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models.meeting import Meeting
+from app.models.meeting import Meeting, MeetingStatus
 from app import db
 from datetime import datetime
 
@@ -122,3 +122,24 @@ def cancel_meeting(meeting_id):
     db.session.commit()
 
     return jsonify({"message": f"Meeting {meeting_id} cancelled successfully."}), 200
+
+@meeting_bp.route("", methods=["GET"])
+@jwt_required()
+def list_meetings():
+    user_id = int(get_jwt_identity())
+
+    meetings = Meeting.query.filter_by(
+        user_id=user_id,
+        status=MeetingStatus.SCHEDULED
+    ).order_by(Meeting.start_time).all()
+
+    return jsonify([
+        {
+            "id": m.id,
+            "title": m.title,
+            "description": m.description,
+            "start_time": m.start_time.isoformat(),
+            "end_time": m.end_time.isoformat(),
+            "status": m.status.value
+        } for m in meetings
+    ]), 200
