@@ -1,9 +1,12 @@
+import React from "react";
+import BookingForm from "./BookingForm";
+
 function App() {
-  return (
-      <div>
-        <h1>Hello from Calendly Clone</h1>
-      </div>
-  );
+    return (
+        <div className="App">
+            <BookingForm />
+        </div>
+    );
 }
 
 export default App;
