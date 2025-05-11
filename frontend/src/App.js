@@ -12,11 +12,11 @@ function App() {
         <Router>
             <AuthProvider>
                 <Routes>
-                    {/*<Route path="/" element={<Home />} />*/}
-                    {<Route path="/login" element={<Login />} />}
-                    {<Route path="/register" element={<Register />} />}
-                    {/*<Route path="/book" element={<BookingForm />} />*/}
-                    {/*<Route path="/confirm" element={<BookingConfirmation />} />*/}
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/confirm" element={<BookingConfirmation />} />
+                    </Routes>
                 </Routes>
             </AuthProvider>
         </Router>

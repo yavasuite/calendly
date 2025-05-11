@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -12,6 +13,7 @@ const BookingForm = () => {
     });
 
     const [status, setStatus] = useState(null);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData((prev) => ({
@@ -24,7 +26,7 @@ const BookingForm = () => {
         e.preventDefault();
 
         try {
-            const token = localStorage.getItem("token"); // replace with your auth logic
+            const token = localStorage.getItem("token");
 
             const res = await axios.post(
                 `${API_BASE_URL}/api/meetings/schedule`,
@@ -37,7 +39,8 @@ const BookingForm = () => {
                 }
             );
 
-            setStatus(`✅ Booked: ${res.data.title}`);
+            // Navigate to confirmation page with meeting data
+            navigate("/confirm", { state: { meeting: res.data } });
         } catch (err) {
             setStatus("❌ Error: " + (err.response?.data?.error || "Unknown"));
         }
