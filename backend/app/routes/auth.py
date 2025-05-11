@@ -7,6 +7,8 @@ auth_bp = Blueprint("auth", __name__)
 
 @auth_bp.route("/register", methods=["POST"])
 def register():
+    if not request.is_json:
+        return jsonify({"error": "Request must be JSON"}), 400
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')

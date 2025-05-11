@@ -43,10 +43,15 @@ export const AuthProvider = ({ children }) => {
             body: JSON.stringify({ email, password, role: 'User' }),
         });
 
-        const data = await res.json();
+        let data;
+        try {
+            data = await res.json();
+        } catch {
+            throw new Error("Invalid response from server. Could not parse JSON.");
+        }
 
         if (!res.ok) {
-            throw new Error(data.error || 'Registration failed');
+            throw new Error(data?.error || 'Registration failed');
         }
 
         localStorage.setItem('token', data.token);
