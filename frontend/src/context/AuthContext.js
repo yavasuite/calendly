@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/login`, {
             method: 'POST',
-            credentials: 'include',
+            credentials: 'omit',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
         });
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     const register = async (email, password) => {
         const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/register`, {
             method: 'POST',
-            credentials: 'include',
+            credentials: 'omit',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password, role: 'User' }),
         });
