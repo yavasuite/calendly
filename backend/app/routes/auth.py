@@ -5,8 +5,10 @@ from app.utils.jwt import generate_access_token
 
 auth_bp = Blueprint("auth", __name__)
 
-@auth_bp.route("/register", methods=["POST"])
+@auth_bp.route("/register", methods=["POST", "OPTIONS"])
 def register():
+    if request.method == 'OPTIONS':
+        return '', 204  # Allow preflight requests through
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
@@ -29,8 +31,10 @@ def register():
     token = generate_access_token(user)
     return jsonify({"message": f"{role} registered successfully", "token": token}), 201
 
-@auth_bp.route("/login", methods=["POST"])
+@auth_bp.route("/login", methods=["POST", "OPTIONS"])
 def login():
+    if request.method == 'OPTIONS':
+        return '', 204  # Allow preflight requests through
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')

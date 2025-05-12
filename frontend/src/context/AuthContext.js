@@ -18,33 +18,27 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            if (!process.env.REACT_APP_API_BASE_URL) {
-                throw new Error("REACT_APP_API_BASE_URL is not defined.");
-            }
+            const baseUrl = process.env.REACT_APP_API_BASE_URL;
+            if (!baseUrl) throw new Error("REACT_APP_API_BASE_URL is not defined.");
 
-            const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/login`, {
+            const res = await fetch(`${baseUrl}/api/auth/login`, {
                 method: 'POST',
                 credentials: 'omit',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
             });
 
-            let data;
-            try {
-                data = await res.json();
-            } catch {
-                throw new Error("Invalid JSON response from server.");
-            }
-
-            if (!res.ok) {
-                throw new Error(data.error || 'Login failed');
-            }
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Login failed');
 
             localStorage.setItem('token', data.access_token);
             localStorage.setItem('role', data.role);
             localStorage.setItem('userId', data.user_id);
+
             setUser({ token: data.access_token, role: data.role, userId: data.user_id });
-            navigate('/dashboard');
+
+            // � Redirect to Home or another valid route
+            navigate('/');
         } catch (err) {
             console.error("Login error:", err);
             throw err;
@@ -53,33 +47,27 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (email, password) => {
         try {
-            if (!process.env.REACT_APP_API_BASE_URL) {
-                throw new Error("REACT_APP_API_BASE_URL is not defined.");
-            }
+            const baseUrl = process.env.REACT_APP_API_BASE_URL;
+            if (!baseUrl) throw new Error("REACT_APP_API_BASE_URL is not defined.");
 
-            const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/register`, {
+            const res = await fetch(`${baseUrl}/api/auth/register`, {
                 method: 'POST',
                 credentials: 'omit',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password, role: 'User' }),
             });
 
-            let data;
-            try {
-                data = await res.json();
-            } catch {
-                throw new Error("Invalid response from server. Could not parse JSON.");
-            }
-
-            if (!res.ok) {
-                throw new Error(data?.error || 'Registration failed');
-            }
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Registration failed');
 
             localStorage.setItem('token', data.token);
             localStorage.setItem('role', 'User');
-            localStorage.setItem('userId', data.user_id || null);
-            setUser({ token: data.token, role: 'User', userId: data.user_id || null });
-            navigate('/dashboard');
+            localStorage.setItem('userId', data.user_id || '');
+
+            setUser({ token: data.token, role: 'User', userId: data.user_id || '' });
+
+            // � Redirect to Home or Login page after register
+            navigate('/');
         } catch (err) {
             console.error("Registration error:", err);
             throw err;
